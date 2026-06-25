@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Result — Heart Disease Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf7f4;
+      --card: #ffffff;
+      --red: #c0392b;
+      --red-light: #f9eceb;
+      --red-mid: #e8a09a;
+      --green: #1e8449;
+      --green-light: #eafaf1;
+      --green-mid: #82c9a0;
+      --text: #1a1a1a;
+      --muted: #7a7a7a;
+      --border: #e8e2dc;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    body::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--red) 40%, var(--red-mid) 60%, transparent 100%);
+      margin-bottom: 2.5rem;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Result banner */
+    .result-banner {
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border: 1px solid transparent;
+      animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .result-banner.danger {
+      background: var(--red-light);
+      border-color: var(--red-mid);
+    }
+
+    .result-banner.safe {
+      background: var(--green-light);
+      border-color: var(--green-mid);
+    }
+
+    .result-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .result-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .danger .result-label { color: var(--red); }
+    .safe  .result-label  { color: var(--green); }
+
+    .result-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.4rem;
+      line-height: 1.1;
+      margin-bottom: 0.8rem;
+    }
+
+    .danger .result-title { color: var(--red); }
+    .safe   .result-title { color: var(--green); }
+
+    .probability-bar-wrap {
+      margin: 1.2rem auto 0;
+      max-width: 320px;
+    }
+
+    .prob-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .prob-track {
+      height: 8px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .prob-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s ease;
+    }
+
+    .danger .prob-fill { background: var(--red); }
+    .safe   .prob-fill { background: var(--green); }
+
+    /* Detail card */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+
+    .input-item {
+      background: #f5f2ef;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+    }
+
+    .input-item .i-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .input-item .i-value {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .advice {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .advice strong { color: var(--text); }
+
+    .btn-back {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--text);
+      color: white;
+      border-radius: 12px;
+      padding: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn-back:hover { opacity: 0.8; }
+
+    @media (max-width: 500px) {
+      .input-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="result-banner {{ color }}">
+    <div class="result-icon">
+      {% if color == 'danger' %}⚠️{% else %}✅{% endif %}
+    </div>
+    <div class="result-label">Prediction Result</div>
+    <div class="result-title">{{ result }}</div>
+
+    <div class="probability-bar-wrap">
+      <div class="prob-label">
+        <span>Heart Disease Risk</span>
+        <span>{{ probability }}%</span>
+      </div>
+      <div class="prob-track">
+        <div class="prob-fill" style="width: {{ probability }}%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Summary -->
+  <div class="card">
+    <div class="section-label">Data Entered</div>
+    <div class="input-grid">
+      <div class="input-item">
+        <div class="i-label">Age</div>
+        <div class="i-value">{{ features[0] }} yrs</div>
+      </div>
+      <div class="input-item">
+        <div class="i-label">Sex</div>
+        <div class="i-value">{% if features[1] == 1 %}Male{% else %}Female{% endif %}</div>
+      </div>
+      <div class="input-item">
+        <div class="i-label">Blood Pressure</div>
+        <div class="i-value">{{ features[3] }} mmHg</div>
+      </div>
+      <div class="input-item">
+        <div class="i-label">Cholesterol</div>
+        <div class="i-value">{{ features[4] }} mg/dL</div>
+      </div>
+      <div class="input-item">
+        <div class="i-label">Max Heart Rate</div>
+        <div class="i-value">{{ features[6] }} bpm</div>
+      </div>
+      <div class="input-item">
+        <div class="i-label">Blood Sugar &gt;120</div>
+        <div class="i-value">{% if features[5] == 1 %}Yes{% else %}No{% endif %}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advice -->
+  <div class="card">
+    <div class="section-label">What This Means</div>
+    {% if color == 'danger' %}
+    <p class="advice">
+      The model detected a <strong>higher probability of heart disease</strong> based on the entered data.
+      Key risk factors include high blood pressure, cholesterol, age, and exercise-induced symptoms.
+      <br/><br/>
+      <strong>Recommendation:</strong> Consult a cardiologist for a full clinical evaluation. This result is not a diagnosis.
+    </p>
+    {% else %}
+    <p class="advice">
+      The model detected a <strong>lower probability of heart disease</strong> based on the entered data.
+      The patient's vitals appear within a relatively healthy range.
+      <br/><br/>
+      <strong>Recommendation:</strong> Maintain a healthy lifestyle. Regular checkups are still advised.
+    </p>
+    {% endif %}
+  </div>
+
+  <a href="/" class="btn-back">← Check Another Patient</a>
+
+</div>
+</body>
+</html>
