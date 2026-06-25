@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Heart Disease Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf7f4;
+      --card: #ffffff;
+      --red: #c0392b;
+      --red-light: #f9eceb;
+      --red-mid: #e8a09a;
+      --text: #1a1a1a;
+      --muted: #7a7a7a;
+      --border: #e8e2dc;
+      --input-bg: #f5f2ef;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* Subtle heartbeat line across top */
+    body::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--red) 40%, var(--red-mid) 60%, transparent 100%);
+      margin-bottom: 2.5rem;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .pulse-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--red);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .header-text h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.1rem;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .header-text p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .accuracy-tag {
+      display: inline-block;
+      background: var(--red-light);
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+      margin-top: 0.5rem;
+      border: 1px solid var(--red-mid);
+    }
+
+    /* Form card */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.2rem;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.05);
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .field label span {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--red-mid);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.08);
+    }
+
+    .spacer { margin-bottom: 1.8rem; }
+
+    .btn-predict {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-predict:hover {
+      background: #a93226;
+      transform: translateY(-1px);
+    }
+
+    .disclaimer {
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 500px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .header { flex-direction: column; gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="pulse-icon">❤️</div>
+    <div class="header-text">
+      <h1>Heart Disease<br/>Predictor</h1>
+      <p>Enter patient health data to assess cardiovascular risk using a trained ML model.</p>
+      <span class="accuracy-tag">Model Accuracy: {{ accuracy }}%</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <form action="/predict" method="POST">
+
+      <div class="section-label">Patient Information</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Age <span>(years)</span></label>
+          <input type="number" name="age" min="20" max="100" placeholder="e.g. 52" required/>
+        </div>
+        <div class="field">
+          <label>Sex</label>
+          <select name="sex" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="section-label">Clinical Measurements</div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Resting Blood Pressure <span>(mmHg)</span></label>
+          <input type="number" name="blood_pressure" min="80" max="220" placeholder="e.g. 130" required/>
+        </div>
+        <div class="field">
+          <label>Cholesterol <span>(mg/dL)</span></label>
+          <input type="number" name="cholesterol" min="100" max="600" placeholder="e.g. 245" required/>
+        </div>
+        <div class="field">
+          <label>Max Heart Rate <span>(bpm)</span></label>
+          <input type="number" name="max_hr" min="60" max="220" placeholder="e.g. 150" required/>
+        </div>
+        <div class="field">
+          <label>Fasting Blood Sugar <span>&gt;120 mg/dL?</span></label>
+          <select name="blood_sugar" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="section-label">Symptoms</div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Chest Pain Type</label>
+          <select name="chest_pain" required>
+            <option value="" disabled selected>Select type</option>
+            <option value="0">Typical Angina</option>
+            <option value="1">Atypical Angina</option>
+            <option value="2">Non-Anginal Pain</option>
+            <option value="3">Asymptomatic</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Exercise-Induced Angina</label>
+          <select name="exercise_angina" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <button type="submit" class="btn-predict">Analyse Risk →</button>
+    </form>
+
+    <p class="disclaimer">⚠️ This tool is for educational purposes only. Not a substitute for medical advice.</p>
+  </div>
+
+</div>
+</body>
+</html>
