@@ -102,4 +102,5 @@ This application is intended for educational and demonstration purposes only and
 **👤 Author**
 
 Firasha Shabir — Student | Machine Learning & AI Enthusiast
+
 GitHub: https://github.com/firashashabir
