@@ -1,9 +1,38 @@
-# ❤️ Heart Disease Predictor
+❤️ Heart Disease Predictor
+An AI-powered web application that predicts the likelihood of heart disease using patient health parameters. The system integrates a trained Random Forest model with a Flask-based web interface.
 
-An ML-powered web application that predicts the likelihood of heart disease based on patient health data.
+🔍 Project Overview
+This project demonstrates an end-to-end machine learning pipeline:
+Synthetic data generation based on real medical risk factors
+Random Forest model training and serialization
+Flask backend serving predictions
+Clean frontend with patient input form and result page
+The application is designed to assist in early cardiovascular risk detection by analyzing commonly used clinical indicators.
 
-## 🖥️ Demo
-Enter patient vitals → Get instant risk assessment with probability score.
+⚙️ Features
+Predicts heart disease risk (High Risk / Low Risk)
+Shows probability percentage score for each prediction
+Clean, responsive, modern UI
+Two-page flow: input form → result page
+Model auto-trains and saves on first run
+
+🧠 Machine Learning Model
+The system uses a Random Forest Classifier trained on simulated patient data modeled after real cardiovascular risk patterns.
+Input Features:
+Age
+Sex (Male / Female)
+Chest Pain Type (4 categories)
+Resting Blood Pressure (mmHg)
+Cholesterol Level (mg/dL)
+Fasting Blood Sugar (>120 mg/dL)
+Maximum Heart Rate Achieved (bpm)
+Exercise-Induced Angina
+Output:
+Binary classification: High Risk / Low Risk
+Probability percentage of heart disease risk
+Model Performance:
+Algorithm: Random Forest Classifier (100 estimators)
+Accuracy: ~85%+
 
 ## 📁 Project Structure
 ```
@@ -15,35 +44,25 @@ heart-disease-predictor/
 │   └── result.html         # Prediction result page
 └── heart_model.pkl         # Saved model (auto-generated on first run)
 ```
+🛠️ Tech Stack
+Programming Language: Python
+Machine Learning: Scikit-learn (Random Forest)
+Backend: Flask
+Frontend: HTML, CSS
+Version Control: GitHub
 
-## 🚀 How to Run
-
-**Step 1 — Install dependencies**
-```bash
+ 🚀 How to Run Locally
+ git clone https://github.com/firashashabir/heart-disease-predictor.git
+cd heart-disease-predictor
 pip install -r requirements.txt
-```
-
-**Step 2 — Run the app**
-```bash
 python app.py
-```
 
-**Step 3 — Open in browser**
-```
+Then open:
 http://127.0.0.1:5000
-```
 
-## 🧠 ML Model
-- **Algorithm:** Random Forest Classifier
-- **Features used:** Age, Sex, Chest Pain Type, Blood Pressure, Cholesterol, Blood Sugar, Max Heart Rate, Exercise-Induced Angina
-- **Accuracy:** ~85%+
 
-## 🛠 Tech Stack
-- Python 3
-- Flask (web framework)
-- Scikit-learn (ML)
-- NumPy
-- HTML & CSS (frontend)
-
-## ⚠️ Disclaimer
-This tool is for **educational purposes only** and is not a substitute for professional medical advice.
+📌 Disclaimer
+This application is intended for educational and demonstration purposes only and should not be used as a substitute for professional medical diagnosis or advice.
+👤 Author
+Firasha Shabir — Student | Machine Learning & AI Enthusiast
+GitHub: https://github.com/firashashabir
